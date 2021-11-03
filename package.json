@@ -16,6 +16,7 @@
   "homepage": "https://bitbucket.org/lestertb/repoproyectoso2#readme",
   "dependencies": {
     "@azure/cognitiveservices-face": "^4.2.0",
-    "axios": "^0.24.0"
+    "axios": "^0.24.0",
+    "dotenv": "^10.0.0"
   }
 }
