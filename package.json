@@ -1,0 +1,21 @@
+{
+  "name": "repoproyectoso2",
+  "version": "1.0.0",
+  "description": "This README would normally document whatever steps are necessary to get your application up and running.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://dani0108@bitbucket.org/lestertb/repoproyectoso2.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "homepage": "https://bitbucket.org/lestertb/repoproyectoso2#readme",
+  "dependencies": {
+    "@azure/cognitiveservices-face": "^4.2.0",
+    "axios": "^0.24.0"
+  }
+}
