@@ -2,7 +2,7 @@ const fs    = require('fs');
 const http  = require('axios');
 const spawn = require("child_process").spawn;
 
-const VALID_EXTENSION = [ 'png','jpeg','jpg','gif','bmp'];
+const VALID_EXTENSION = [ 'png','jpg','gif','bmp'];
 const IMAGES_FOLDER = './images';
 const {
     AZURE_FACE_ENDPOINT, 
@@ -138,6 +138,7 @@ exports.analyzeStatistics = (results = [] ) => {
         }
     }
 
+    console.log(statistics);
     return statistics;
 }
 
@@ -157,18 +158,17 @@ exports.analyzePython = async (files) => {
     console.log("Empezo")
     return new Promise( (resolve, reject) => {
         pythonProcess.stdout.on('data', (data) => {
-            console.log("Termino",data)
-            var parsedData = JSON.parse(data.toString());
-            console.log(parsedData)
-            var statistics = this.analyzeStatistics(parsedData.response)
-            resolve(statistics);
+            try {
+                var parsedData = JSON.parse(data.toString());
+                var statistics = this.analyzeStatistics(parsedData.response)
+                resolve(statistics);     
+            } catch (error) {}         
         }); 
         pythonProcess.on('error', (error) => {
             console.log(error)
             reject()
         }) 
     });
-
 }
 
 module.exports;

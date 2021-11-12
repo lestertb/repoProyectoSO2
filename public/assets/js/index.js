@@ -1,6 +1,4 @@
-var miCanvas ,miCanvas2, miCanvas3,charst,loadingAlert;
-
-
+var miCanvas ,miCanvas2, miCanvas3,charst,loadingAlert, timerTotal;
 
 function load(){
     miCanvas =  document.getElementById("MiGrafico").getContext("2d");
@@ -8,19 +6,23 @@ function load(){
     miCanvas3 = document.getElementById("MiGrafico3").getContext("2d");
     charst = document.getElementById('charts');
     loadingAlert = document.getElementById('loading');
+    timerTotal = document.getElementById('timer');
 } 
 
 function normal(){
     loadingAlert.style.visibility = "visible";
+    var begin=Date.now();
     axios.get('/api/analyze')
     .then(response => {
+        var end= Date.now();
+        var timeSpent=(end-begin)/1000+"secs";
         const data = response.data.data;
         loadingAlert.style.visibility = "hidden";
         charst.style.visibility = "visible";
         createChart1(data);
         createChart2(data);
         createChart3(data);
-        
+        timerTotal.innerHTML = 'Duración: ' + timeSpent;
     })
     .catch(error => console.error(error));
 
@@ -29,15 +31,18 @@ function normal(){
 
 function multiprocessing(){
     loadingAlert.style.visibility = "visible";
+    var begin=Date.now();
     axios.get('/api/python')
     .then(response => {
+        var end= Date.now();
+        var timeSpent=((end-begin)-1000)/1000+"secs";
         const data = response.data.data;
         loadingAlert.style.visibility = "hidden";
         charst.style.visibility = "visible";
         createChart1(data);
         createChart2(data);
         createChart3(data);
-        
+        timerTotal.innerHTML = 'Duración: ' + timeSpent;
     })
     .catch(error => console.error(error));
 }
@@ -68,7 +73,7 @@ function createChart1(dataTest){
         options: {
             scales: {
                 y: {
-                    max: 5,
+                    max: 10,
                     min: 0,
                     ticks: {
                         stepSize: 0.5
@@ -120,7 +125,7 @@ function createChart2(dataTest){
         options: {
             scales: {
                 y: {
-                    max: 5,
+                    max: 10,
                     min: 0,
                     ticks: {
                         stepSize: 0.5

@@ -23,10 +23,23 @@ de comandos como `Git Bash`, `CMD` o `Powershell`, y ejecutar:
 Para empezar a usar el proyecto es necesario tener algunas imagenes para analizar. Coloque cualquier imagen en la carpeta `images` y por medio de una consola de línea de comandos ejecute:
 
 ```console
-    nodemon .
+    npm start
 ```
 
 Este comando ejecutará el servidor de nodejs donde accediendo a la dirección `http://localhost:8081` podrá observar la página HTML que le permitirá utilizar las funcionalidades del proyecto para la utilización de los servicios de Azure.
 
+`Se verá de esta forma:`
+
 ![Screenshot](./public/assets/imgReadme/Capture.PNG)
 
+Con el botón `Normal`, se ejecutará la funcionalidad sin multiproceso, es decir sin la utilización de Python.
+
+Con el botón `Multiprocesamiento` se ejecutará la funcionalidad con multipocesamiento utilizando Python.
+
+### Resultados ###
+
+En la consola se imprimirá el resultado del análisis en formato JSON, y a la vez, en el página corriendo en la dirección `http://localhost:8081` se observará unos gráficos del resultado.
+
+`Gráficos - Info:`
+
+![Screenshot](./public/assets/imgReadme/Capture2.PNG)
