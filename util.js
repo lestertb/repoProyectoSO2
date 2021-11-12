@@ -1,5 +1,6 @@
 const fs    = require('fs');
 const http  = require('axios');
+const spawn = require("child_process").spawn;
 
 const VALID_EXTENSION = [ 'png','jpeg','jpg','gif','bmp'];
 const IMAGES_FOLDER = './images';
@@ -76,6 +77,70 @@ exports.analyzeAction = async (filename) => {
     return result.data
 }
 
+exports.analyzeStatistics = (results = [] ) => {
+    
+    const statistics = { // estas son estadisticas en general
+        adultContent:0,
+        goreContent:0,
+        racyContent:0,
+        emotions:{
+            anger:0,
+            contempt:0,
+            disgust:0,
+            fear:0,
+            happiness:0,
+            neutral:0,
+            sadness:0,
+            surprise:0,
+        },
+        genders:{
+            male:0,
+            female:0
+        },
+        objects:[],
+        actions:[]
+    }
+
+    for (let i = 0; i < results.length; i++) {
+        const result = results[i];
+        
+        for(face of result.faces ){
+            const element = face.faceAttributes;
+            if(element.gender == 'female'){
+                statistics.genders.female += 1;
+            }
+
+            if(element.gender == 'male'){
+                statistics.genders.male += 1;
+            }
+
+            var key = this.getMaxValue(element.emotion);
+            if(key){
+                statistics.emotions[key] +=1;
+            }
+        }
+
+        if(result.adult.isAdultContent ){
+            statistics.adultContent +=1;
+        }
+
+        if(result.adult.isRacyContent ){
+            statistics.racyContent+=1;
+        }
+
+        if(result.adult.isGoryContent){
+            statistics.goreContent+=1;
+        }
+
+        statistics.objects= statistics.objects.concat(result.objects);
+        if( result.description.captions[0] ){
+            statistics.actions.push( result.description.captions[0].text );
+        }
+    }
+
+    return statistics;
+}
+
 // de un objeto json devuelve el valor más alto del objeto
 exports.getMaxValue = (json) => {
     var keyMax = null,valueMax = 0;
@@ -85,6 +150,25 @@ exports.getMaxValue = (json) => {
         }
     }
     return keyMax;
+}
+
+exports.analyzePython = async (files) => {
+    const pythonProcess = spawn('python',["analyze.py", files, AZURE_FACE_ENDPOINT, AZURE_FACE_KEY1, AZURE_ACTION_ENDPOINT, AZURE_ACTION_KEY1]);
+    console.log("Empezo")
+    return new Promise( (resolve, reject) => {
+        pythonProcess.stdout.on('data', (data) => {
+            console.log("Termino",data)
+            var parsedData = JSON.parse(data.toString());
+            console.log(parsedData)
+            var statistics = this.analyzeStatistics(parsedData.response)
+            resolve(statistics);
+        }); 
+        pythonProcess.on('error', (error) => {
+            console.log(error)
+            reject()
+        }) 
+    });
+
 }
 
 module.exports;

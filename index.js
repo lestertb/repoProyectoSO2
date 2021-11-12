@@ -8,30 +8,6 @@ const util = require('./util');
 const app = express();
 const logger = require('morgan');
 
-
-const statistics = { // estas son estadisticas en general
-    adultContent:0,
-    goreContent:0,
-    racyContent:0,
-    emotions:{
-        anger:0,
-        contempt:0,
-        disgust:0,
-        fear:0,
-        happiness:0,
-        neutral:0,
-        sadness:0,
-        surprise:0,
-    },
-    genders:{
-        male:0,
-        female:0
-    },
-    objects:[],
-    actions:[]
-}
-
-
 //Configuracion del servidor
 app.set('port', process.env.PORT || process.env.APP_PORT || 8081);
 
@@ -49,20 +25,31 @@ app.use((req, res, next) => {
 });
 
 app.use(express.static(__dirname + '/public'));
-
 app.get('/api/analyze', (req,res,next) => {
     const files = util.getFiles();
 
     // meter multicore aquí 
     analyze(files).then( response => {
-        console.log(statistics);
-        res.status(200).json({success:true, data:statistics});
+        const statistics= util.analyzeStatistics(response)
+    
+        res.status(200).json({success:true, data: statistics });
     })
+});
+
+app.get('/api/python', (req,res,next) => {
+    const files = util.getFiles();
+
+    util.analyzePython(files).then( result => {
+        console.log("Respuesta")
+        res.status(200).json({success:true, data:result});
+    },error => {
+        res.status(200).json({success:false, data:null});
+    });
 });
 
 
 async function analyze(files){
-    // Tal vez aqui hacer el multiprocesamiento. NodeJS tiene algo llamado "cluster" para la invocacion de subprocesos.
+    var result = []
     for( let file of files){
         console.log("Analizando ",file)
         const action = await util.analyzeAction(file); // contiene la iformacion total de la escena
@@ -72,41 +59,11 @@ async function analyze(files){
             const faces = await util.analyzeFace(file);
             action.faces = faces;// remplazo la variable con el analisis detallado
 
-            for(face of faces ){
-                const element = face.faceAttributes;
-                if(element.gender == 'female'){
-                    statistics.genders.female += 1;
-                }
-
-                if(element.gender == 'male'){
-                    statistics.genders.male += 1;
-                }
-
-                var key = util.getMaxValue(element.emotion);
-                if(key){
-                    statistics.emotions[key] +=1;
-                }
-            }
-
-        }
-    
-        if(action.adult.isAdultContent ){
-            statistics.adultContent +=1;
         }
 
-        if(action.adult.isRacyContent ){
-            statistics.racyContent+=1;
-        }
-
-        if(action.adult.isGoryContent){
-            statistics.goreContent+=1;
-        }
-
-        statistics.objects= statistics.objects.concat(action.objects);
-        if( action.description.captions[0] ){
-            statistics.actions.push( action.description.captions[0].text );
-        }
+        result.push(action)
     }
+    return result
 }
 
 app.listen(app.get('port'),() => {
