@@ -153,16 +153,5 @@ function createChart3(dataTest){
                     }
                 ]
             },
-        options: {
-            scales: {
-                y: {
-                    max: 5,
-                    min: 0,
-                    ticks: {
-                        stepSize: 0.5
-                    }
-                }
-            }
-        }
     });
 }
