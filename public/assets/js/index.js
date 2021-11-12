@@ -1,14 +1,22 @@
-var miCanvas ,miCanvas2, miCanvas3;
+var miCanvas ,miCanvas2, miCanvas3,charst,loadingAlert;
+
+
 
 function load(){
     miCanvas =  document.getElementById("MiGrafico").getContext("2d");
     miCanvas2 = document.getElementById("MiGrafico2").getContext("2d");
     miCanvas3 = document.getElementById("MiGrafico3").getContext("2d");
+    charst = document.getElementById('charts');
+    loadingAlert = document.getElementById('loading');
+} 
 
+function normal(){
+    loadingAlert.style.visibility = "visible";
     axios.get('/api/analyze')
     .then(response => {
         const data = response.data.data;
-        
+        loadingAlert.style.visibility = "hidden";
+        charst.style.visibility = "visible";
         createChart1(data);
         createChart2(data);
         createChart3(data);
@@ -16,6 +24,22 @@ function load(){
     })
     .catch(error => console.error(error));
 
+}
+
+
+function multiprocessing(){
+    loadingAlert.style.visibility = "visible";
+    axios.get('/api/python')
+    .then(response => {
+        const data = response.data.data;
+        loadingAlert.style.visibility = "hidden";
+        charst.style.visibility = "visible";
+        createChart1(data);
+        createChart2(data);
+        createChart3(data);
+        
+    })
+    .catch(error => console.error(error));
 }
 
 function createChart1(dataTest){

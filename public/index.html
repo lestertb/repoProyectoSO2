@@ -8,18 +8,30 @@
     <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
     <script src="assets/js/chart.js"></script>
     <script src="assets/js/index.js"></script>
+    <link rel="stylesheet" href="assets/css/index.css">
 </head>
 <body onload="load()">
-    <canvas id="MiGrafico" width="400" height="300"></canvas>
-    <br>
-    <br>
-    <br>
-    <canvas id="MiGrafico2" width="400" height="300"></canvas>
-    <br>
-    <br>
-    <br>
-    <canvas id="MiGrafico3" width="300" height="200"></canvas>
-    
+    <h1> Estadi­sticas Azure Cognitive Services</h1>
+    <div class="container-button">
+        <button onclick="normal()">Normal</button>
+        <button onclick="multiprocessing()">multiprocesamiento</button>
+    </div>
+    <div id="loading">
+        Cargando...
+    </div>
+    <div id="charts" class="grid-container">
+        <div class="grid-item" style="width: 480px;">
+            <canvas id="MiGrafico"></canvas>
+        </div>
+
+        <div class="grid-item">
+            <canvas id="MiGrafico2"></canvas>
+        </div>
+
+        <div class="grid-item">
+            <canvas id="MiGrafico3"></canvas>
+        </div>  
+    </div>
 </body>
 
 </html>
