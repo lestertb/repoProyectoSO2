@@ -78,3 +78,12 @@ async function analyze(files){
 analyze(files).then( result => {
     console.log(statistics);
 });
+
+
+module.exports;
+
+
+
+
+
+        
